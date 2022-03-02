@@ -17,7 +17,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import com.bananeexport.entity.Commande;
 import com.bananeexport.entity.Destinataire;
-import com.bananeexport.entity.Produit;
 
 
 @Configuration
@@ -34,16 +33,18 @@ public class ApplicationDataRestConfig implements RepositoryRestConfigurer {
 	@Override
 	public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
 
-		HttpMethod[] unsupportedActions = {HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.POST, HttpMethod.PATCH};
+		//HttpMethod[] methode_non_authorisee_1 = {HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.POST, HttpMethod.PATCH};
+		HttpMethod[] methode_non_authorisee_2 = {HttpMethod.PUT, HttpMethod.POST};
 		//Disable
-		disableHttpMethods(Produit.class,config, unsupportedActions);
-		disableHttpMethods(Destinataire.class,config, unsupportedActions);
-		disableHttpMethods(Commande.class,config, unsupportedActions);
+		//disableHttpMethods(Produit.class,config, methode_non_authorisee_1);
+		//disableHttpMethods(Article.class,config, methode_non_authorisee_1);
+		disableHttpMethods(Commande.class,config, methode_non_authorisee_2);
+		disableHttpMethods(Destinataire.class,config, methode_non_authorisee_2);
 
-		//Call an internal helper methode to expose IDs
+		//Pour exposer les ID
 		exposeIds(config);
-		cors.addMapping(config.getBasePath()+ "/**")
-		.allowedOrigins(origines);
+		//cors.addMapping(config.getBasePath()+ "/**")
+		//.allowedOrigins(origines);
 		//.allowedHeaders("*");
 
 		//config.setReturnBodyForPutAndPost(true);

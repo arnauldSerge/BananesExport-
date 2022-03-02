@@ -10,6 +10,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -37,7 +38,7 @@ public class Commande implements Serializable {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue
-	//(strategy = GenerationType.IDENTITY)
+	(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	/**
@@ -47,15 +48,9 @@ public class Commande implements Serializable {
 	@CreationTimestamp
 	private Date dateCommande; 
 	
-	//@DateLivraisonConstraint(minimum = 7)
-	@Column(name="livre_le")
-	private Date livreLe;
 	
-//	@Column(name="livraison_prevu_le")
-//	private Date livraisonPrevuLe;
-	
-	@Column(name="livraison_souhaite_pour")
-	private Date livraisonSouhaitePour;
+	@Column(name="date_livraison")
+	private Date dateLivraison;
 	
 	
 	
@@ -69,8 +64,9 @@ public class Commande implements Serializable {
 //	private int quantiteTotal;
 	
 	@NotNull
-	@Column(name="prix_total")
-	private BigDecimal prixTotal;
+	@Column(name="prix")
+	private BigDecimal prix;
+	
 	
 	@Lazy
 	@ManyToOne

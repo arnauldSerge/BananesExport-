@@ -1,14 +1,17 @@
 package com.bananeexport.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
+@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 public class BusinessResourceException extends RuntimeException  {
 	
 	 private static final long serialVersionUID = 1L;
 	    private Long resourceId;
 	    private String errorCode;
 	    private HttpStatus status;
-	    private String[] messageParam;
+	    
+	    private String[] messageParam = {};
 
 	    public BusinessResourceException(String message,  String[] messageParam) {
 	        super(message);
@@ -38,7 +41,7 @@ public class BusinessResourceException extends RuntimeException  {
 	        super(messageKey);
 	        this.errorCode = errorCode;
 	        this.status = status;
-	        this.messageParam = messageParam;
+	        this.setMessageParam(messageParam);
 	    }
 
 	    public Long getResourceId() {
@@ -64,5 +67,10 @@ public class BusinessResourceException extends RuntimeException  {
 	    public void setStatus(HttpStatus status) {
 	        this.status = status;
 	    }
-
+		public String[] getMessageParam() {
+			return messageParam;
+		}
+		public void setMessageParam(String[] messageParam) {
+			this.messageParam = messageParam;
+		}
 }

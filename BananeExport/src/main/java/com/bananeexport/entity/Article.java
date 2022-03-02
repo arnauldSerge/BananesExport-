@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 
 import org.springframework.context.annotation.Lazy;
@@ -34,15 +35,17 @@ public class Article implements Serializable {
 	@Column(name = "quantite")
 	private Long quantite;
 	
-	@Column(name = "prix_total")
-	private BigDecimal prixTotal;
+	@Column(name = "prix")
+	private BigDecimal prix;
 		
 //	@ManyToOne
 //	@JoinColumn(name="produit_id", nullable = false)
 //	private Produit produit;
-	
+	@Transient
 	@Column(name="produit_id", nullable = false)
 	private Long produit;
+	
+	@Transient
 	@Lazy
 	@ManyToOne
 	@JoinColumn(name="commande_id", nullable = false)

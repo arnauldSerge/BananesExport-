@@ -1,47 +1,23 @@
 package com.bananeexport.exception.dto;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 
-public class BusinessResourceExceptionDTO {
+import lombok.Data;
+
+@Data
+public class BusinessResourceExceptionDTO implements Serializable {
 	
-	 private String errorCode;
-	    private String errorMessage;
+	    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+		private String errorMessage;
 		private String requestURL;
 		private HttpStatus status;
-	 
-	    public BusinessResourceExceptionDTO() {
-	    }
-	 
-	    public String getErrorCode() {
-	        return errorCode;
-	    }
-	 
-	    public void setErrorCode(String errorCode) {
-	        this.errorCode = errorCode;
-	    }
-	 
-	    public String getErrorMessage() {
-	        return errorMessage;
-	    }
-	 
-	    public void setErrorMessage(String errorMessage) {
-	        this.errorMessage = errorMessage;
-	    }
-
-		public void setRequestURL(String url) {
-			this.requestURL = url;
-			
-		}
-		public String getRequestURL(){
-			return requestURL;
-		}
-		
-	    public HttpStatus getStatus() {
-			return status;
-		}
-
-		public void setStatus(HttpStatus status) {
-			this.status = status;
-		}
-
+		private List<String> errors = new ArrayList<String>();
 }

@@ -1,8 +1,8 @@
 -- Produit 
 
 insert into produit(description, prix,nom, nombre_jour_livraison)
-values('25kg de Banane plantain origine Cameroon',25, 'Banane Plantain 25kg', 5)
-,('25kg de Banane verte',14, 'Banane vert', 7), ('25kg de Banane rouge',35, 'Banane vert', 3);
+values('Le kilo de  Banane',2.5, 'Banane', 7);
+-- ,('25kg de Banane verte',14, 'Banane vert', 7), ('25kg de Banane rouge',35, 'Banane vert', 3);
 
 
 ---- destinataire 

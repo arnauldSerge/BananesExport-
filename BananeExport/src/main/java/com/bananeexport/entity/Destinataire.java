@@ -14,15 +14,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.context.annotation.Lazy;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name="destinataire")
-@Data
+@Setter
+@Getter
 public class Destinataire implements Serializable{
 	
 	/**
@@ -36,29 +37,30 @@ public class Destinataire implements Serializable{
 	(strategy = GenerationType.IDENTITY)
 	private Long id;  
 	
-	@NotNull
+	@NotBlank(message="le nom est obligatoire")
 	@Column(name="nom")
 	private String nom;
 	
-	@NotBlank
+	@NotBlank(message="l'adresse est obligatoire")
 	@Column(name="adresse")
 	private String adresse;
 	
-	@NotBlank
+	@NotBlank(message="le code postal est obligatoire")
 	@Column(name="code_postal")
 	private String codePostal;
 	
-	@NotNull
-	@NotBlank
+	
+	@NotBlank(message="La ville est obligatoire")
 	@Column(name="ville")
 	private String ville;
 	
+	@NotBlank(message="Le pays est obligatoire")
 	@Column(name="pays")
 	private String pays;
 	
 	@Transient
 	@Lazy
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" )
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "destinataire" )
 	private Set<Commande> commandes = new HashSet<Commande>();
 	
 	public void AjouterCommande(Commande item) {
@@ -70,4 +72,62 @@ public class Destinataire implements Serializable{
 			item.setDestinataire(this);
 		}
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((adresse == null) ? 0 : adresse.hashCode());
+		result = prime * result + ((codePostal == null) ? 0 : codePostal.hashCode());
+		result = prime * result + ((commandes == null) ? 0 : commandes.hashCode());
+		result = prime * result + ((nom == null) ? 0 : nom.hashCode());
+		result = prime * result + ((pays == null) ? 0 : pays.hashCode());
+		result = prime * result + ((ville == null) ? 0 : ville.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Destinataire other = (Destinataire) obj;
+		if (adresse == null) {
+			if (other.adresse != null)
+				return false;
+		} else if (!adresse.equals(other.adresse))
+			return false;
+		if (codePostal == null) {
+			if (other.codePostal != null)
+				return false;
+		} else if (!codePostal.equals(other.codePostal))
+			return false;
+		if (commandes == null) {
+			if (other.commandes != null)
+				return false;
+		} else if (!commandes.equals(other.commandes))
+			return false;
+		if (nom == null) {
+			if (other.nom != null)
+				return false;
+		} else if (!nom.equals(other.nom))
+			return false;
+		if (pays == null) {
+			if (other.pays != null)
+				return false;
+		} else if (!pays.equals(other.pays))
+			return false;
+		if (ville == null) {
+			if (other.ville != null)
+				return false;
+		} else if (!ville.equals(other.ville))
+			return false;
+		return true;
+	}
+	
+	
+	
 }

@@ -1,9 +1,9 @@
 package com.bananeexport.service;
 
 import com.bananeexport.dto.AchatDto;
-import com.bananeexport.dto.AchatResponseDto;
+import com.bananeexport.entity.Commande;
+import com.bananeexport.entity.Destinataire;
 
 public interface AchatService {
-	AchatResponseDto commander(AchatDto achat);
-
+	Commande save(AchatDto achat, Destinataire dest);
 }

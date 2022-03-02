@@ -3,8 +3,8 @@ package com.bananeexport.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(code = HttpStatus.NOT_FOUND)
-public class ResourceNotFoundException extends BusinessResourceException {
+@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+public class ResourceAlreadyExistException extends BusinessResourceException {
 
 	/**
 	 * 
@@ -14,12 +14,10 @@ public class ResourceNotFoundException extends BusinessResourceException {
 	private String resourceName;  
 	private Object fieldValue;
 	private String fieldName;
-	public ResourceNotFoundException(String resourceName, String fieldName, Object fieldValue) {
-		super(String.format("%s not found with %s : '%s'", resourceName, fieldName, fieldValue),null);
-		setStatus(HttpStatus.NOT_FOUND);
+	public ResourceAlreadyExistException(String resourceName) {
+		super(String.format("Cette destinataire existe déja", resourceName,""),null);
+		setStatus(HttpStatus.ACCEPTED);
 		this.resourceName = resourceName;
-		this.fieldName = fieldName;
-		this.fieldValue = fieldValue;
 	}
 	public String getResourceName() {
 		return resourceName;
