@@ -14,4 +14,7 @@ public interface DestinataireDao extends JpaRepository<Destinataire, Long>, Quer
 	@Override
 	@RestResource(exported =false)
 	<S extends Destinataire> S save(S entity);
+	
+	@RestResource(exported =false)
+	Destinataire findOneByEmail(String email);
 }

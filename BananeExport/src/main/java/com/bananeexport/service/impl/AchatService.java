@@ -2,21 +2,17 @@ package com.bananeexport.service.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bananeexport.dao.CommandeDao;
@@ -24,76 +20,74 @@ import com.bananeexport.dao.DestinataireDao;
 import com.bananeexport.dao.ProduitDao;
 import com.bananeexport.dto.AchatDto;
 import com.bananeexport.dto.ArticleDto;
+import com.bananeexport.dto.DataUtils;
 import com.bananeexport.entity.Article;
 import com.bananeexport.entity.Commande;
 import com.bananeexport.entity.Destinataire;
 import com.bananeexport.entity.Produit;
 import com.bananeexport.exception.BusinessResourceException;
 import com.bananeexport.exception.ResourceNotFoundException;
-import com.bananeexport.service.AchatService;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
-public class AchatServiceImpl implements AchatService {
-	@Autowired
-	CommandeDao commandeDao;
-	@Autowired
-	DestinataireDao destinataireDao;
-	@Autowired
-	ProduitDao produitDao;
+@RequiredArgsConstructor
+public class AchatService  {
 	
+	private final CommandeDao commandeDao;
+	private DestinataireDao destinataireDao;
+	private final ProduitDao produitDao;
 	
-
-	@Override
 	@Transactional
-	public Commande save(AchatDto achat, Destinataire dest) {
-		Commande commande;
+	public Commande save(AchatDto achat) {
+		
+		
+		Commande  commande;
 		if(achat.getId()!=null ) { 		
 		 commande =  commandeDao.findById(achat.getId()).map(cmd -> cmd)	
 				. orElse( new Commande());
 		} else {
 			commande = new Commande();
 		}
-
-		if(achat.getId()==null) {
+		
+		if(achat.getId() == null) {
 			String numero = generateNumeroDeCommande();
 			commande.setNumeroCommande(numero);
 		}
 		
 		commande.setDateLivraison(achat.getLivraisonSouhaitePour());
 		commande.setPrix(new BigDecimal(0));
+		
+		
 		//Remplir la liste d'acticles
 		Set<ArticleDto> articleDtos = achat.getArticles();
-		List<Integer> delais = new ArrayList<>();
-		Set<Article> articles = new HashSet<>();
-		articleDtos.forEach(item -> {
-			Article article = new Article();
-			article.setQuantite(item.getQuantite());
-			article.setProduit(item.getProduitId());
-			Produit produit = produitDao.findById(item.getProduitId())
-					.orElseThrow(() -> new ResourceNotFoundException("Produit","ID",item.getProduitId()));
-			BigDecimal prixArticle =BigDecimal.ZERO;
-					
-			prixArticle = produit.getPrix().multiply(BigDecimal.valueOf(item.getQuantite()));
+		Set<Article> articles = articleDtos.stream()
+		.map( a -> DataUtils.createArticleFromDto(a))
+		.collect(Collectors.toSet());
+		
+		
+		//Calculer le prix des articles, recuperer le delain 
+		//et integrer la commande des produits
+		Set<Integer> delais = new HashSet<Integer>();
+		articles.forEach(article -> {
+			Produit produit = produitDao.findById(article.getProduit())
+					.orElseThrow(() -> new ResourceNotFoundException("Produit","ID",article.getProduit()));
+			delais.add(produit.getNombreJourLivraison());
+			BigDecimal prixArticle =BigDecimal.ZERO;		
+			prixArticle = produit.getPrix().multiply(BigDecimal.valueOf(article.getQuantite()));
 			article.setPrix(prixArticle);
 			article.setCommande(commande);
-			articles.add(article);
-			commande.setPrix(commande.getPrix().add(prixArticle));
-			// pour determiner le delais de livraison valable
-			delais.add(produit.getNombreJourLivraison());
 		});
-		commande.setArticles(articles);	
+		commande.setArticles(articles);
 		
+		// Determiner le prix de la commande
+		BigDecimal prixCommande = articles.stream().map(Article::getPrix).reduce(BigDecimal.ZERO, BigDecimal::add);
+		commande.setPrix(prixCommande);
 		
-		commande.setDestinataire(dest);
-		Date date = achat.getLivraisonSouhaitePour();
-		//date.
+		LocalDate date = achat.getLivraisonSouhaitePour();
+		
 
-		LocalDate today = LocalDate.now();
-		LocalDate localDateToBeValidate = date.toInstant()
-				.atZone(ZoneId.systemDefault())
-				.toLocalDate();
-		boolean isValid = (localDateToBeValidate.isAfter(today) 
-				&& ChronoUnit.DAYS.between(today,localDateToBeValidate) >= Collections.max(delais));
+		boolean isValid = ChronoUnit.DAYS.between(LocalDate.now(),date) >= Collections.max(delais);
 
 		if(!isValid) {
 			LocalDate minDate = LocalDate.now().plusDays(Collections.max(delais));
@@ -101,6 +95,10 @@ public class AchatServiceImpl implements AchatService {
 			throw new BusinessResourceException("Commande", tab[0],tab) ;
 		}
 		commande.setDateLivraison(achat.getLivraisonSouhaitePour());
+		
+		//Recupere ou creer le destinataire 
+		Destinataire destinataire = destinataireDao.findOneByEmail(achat.getDestinataire().getEmail());
+		commande.setDestinataire(destinataire);
 		
 		return  commandeDao.save(commande);
 	}

@@ -2,7 +2,8 @@ package com.bananeexport.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,11 +47,11 @@ public class Commande implements Serializable {
 	 */
 	@Column(name="dateCommande", updatable = false)
 	@CreationTimestamp
-	private Date dateCommande; 
+	private LocalTime dateCommande; 
 	
 	
 	@Column(name="date_livraison")
-	private Date dateLivraison;
+	private LocalDate dateLivraison;
 	
 	
 	

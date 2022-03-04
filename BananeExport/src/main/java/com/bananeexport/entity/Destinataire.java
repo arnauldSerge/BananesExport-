@@ -13,17 +13,22 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.context.annotation.Lazy;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name="destinataire")
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Destinataire implements Serializable{
 	
 	/**
@@ -40,6 +45,16 @@ public class Destinataire implements Serializable{
 	@NotBlank(message="le nom est obligatoire")
 	@Column(name="nom")
 	private String nom;
+	
+	@NotBlank(message="le prenom est obligatoire")
+	@Column(name="prenom")
+	private String prenom;
+	
+	@NotBlank(message="l'email est obligatoire")
+	@Email
+	@Column(name="email" , unique = true)
+	private String email;
+	
 	
 	@NotBlank(message="l'adresse est obligatoire")
 	@Column(name="adresse")

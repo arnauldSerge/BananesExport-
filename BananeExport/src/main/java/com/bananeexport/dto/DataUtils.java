@@ -16,6 +16,7 @@ public class DataUtils {
 		destinataire.setVille(dto.getVille());
 		destinataire.setPays(dto.getPays());
 		destinataire.setNom(dto.getNom());
+		destinataire.setEmail(dto.getEmail());
 		return destinataire;
 	}
 	
@@ -28,6 +29,7 @@ public class DataUtils {
 		destinataire.setVille(dest.getVille());
 		destinataire.setPays(dest.getPays());
 		destinataire.setNom(dest.getNom());
+		destinataire.setEmail(dest.getEmail());
 		return destinataire;
 	}
 	
@@ -53,5 +55,15 @@ public class DataUtils {
 		articleDto.setId(article.getId());
 		articleDto.setPrix(article.getPrix());
 		return articleDto;
+	}
+	
+	
+	public static Article createArticleFromDto(ArticleDto articleDto) {
+		Article article = new Article();
+		article.setProduit(articleDto.getProduitId());
+		article.setQuantite(articleDto.getQuantite());
+		article.setId(articleDto.getId());
+		article.setPrix(articleDto.getPrix());
+		return article;
 	}
 }

@@ -2,7 +2,9 @@ package com.bananeexport.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -20,6 +22,9 @@ public class DestinataireDto implements Serializable {
 	@NotBlank(message="le nom est obligatoire")
 	private String nom;
 	
+	@NotBlank(message="le prenom est obligatoire")
+	private String prenom;
+	
 	@NotBlank(message="l'adresse est obligatoire")
 	private String adresse;
 	
@@ -31,5 +36,9 @@ public class DestinataireDto implements Serializable {
 	
 	@NotBlank(message=" le pays est obligatoire")
 	private String pays;
+	
+	@Email
+	@NotNull
+	private String email;
 
 }

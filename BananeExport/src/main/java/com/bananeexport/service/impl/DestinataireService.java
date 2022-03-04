@@ -11,14 +11,16 @@ import com.bananeexport.dto.DataUtils;
 import com.bananeexport.dto.DestinataireDto;
 import com.bananeexport.entity.Destinataire;
 import com.bananeexport.exception.ResourceAlreadyExistException;
-import com.bananeexport.service.DestinataireService;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
-public class DestinataireServiceImpl implements DestinataireService {
+@RequiredArgsConstructor
+public class DestinataireService  {
 	@Autowired
-	private DestinataireDao destinataireDao;
+	private final DestinataireDao destinataireDao;
 
-	@Override
+	
 	public boolean existsDestinataire(Destinataire dest) {
 		Example<Destinataire> destinataireExample = Example.of(dest);
 		return destinataireDao.exists(destinataireExample);
@@ -26,14 +28,14 @@ public class DestinataireServiceImpl implements DestinataireService {
 	
 	
 	
-	@Override
+	
 	public Destinataire findByDestinataire(Destinataire dest) {
 		Example<Destinataire> destinataireExample = Example.of(dest);
 		Optional<Destinataire> opt_dest = destinataireDao.findOne(destinataireExample);
 		return opt_dest.isPresent()? opt_dest.get() : null;
 	}
 
-	@Override
+	
 	public Destinataire saveDestinataire(DestinataireDto dest) {
 		Destinataire entity = DataUtils.createDestinataireFromDto(dest);
 		if(!existsDestinataire(entity)) {

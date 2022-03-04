@@ -1,7 +1,7 @@
 package com.bananeexport.dto;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,7 +26,7 @@ public class AchatDto implements Serializable {
 	
 	@NotNull(message = "Une date de livraison doit etre renseignée" )
 	//@DateLivraisonConstraint(message = "{error.date.livraison.impossible}", minimum = 7)
-	private Date livraisonSouhaitePour;
+	private LocalDate livraisonSouhaitePour;
 	
 	@NotEmpty(message = " il faut au moins un article" )
 	private Set<@Valid ArticleDto> articles = new HashSet<>();
